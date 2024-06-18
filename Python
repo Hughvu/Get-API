@@ -1,0 +1,33 @@
+#import libraries
+import requests
+import pandas as pd
+import time
+import json as json
+
+base_url = "https://bssandbox.leadercloud.com.au/"
+client_id = "9BFBC1DD-9978-456C-8874-FC73299DB882"
+client_secret = "CS/m3cXcBo0aPm6QYA02VK3k8vob3JX0v6ed/OaFiIU="
+username = "hugh"
+password = "manie580"
+grant_type = "password"
+
+
+response = requests.post(base_url + '/oauth/token', auth=(client_id, client_secret),
+                         data={'client_id': client_id, 'client_secret': client_secret, 'username': username, 'password': password, 'grant_type': grant_type})
+print(response.text)
+
+#getAccount = requests.get(base_url + 'api/Accounts', headers={'Authorization': 'Bearer ' + response.json()["access_token"]})
+#print('name: ' + getAccount.json()[1]['name'])
+#print('id: ' , getAccount.json()[2]['id'])
+
+# id: 10
+# name: Leader Cloud Support
+# id: 11
+# name: Hanh Tran
+#....
+getAccount = requests.get(base_url + 'api/Accounts', headers={'Authorization': 'Bearer ' + response.json()["access_token"]})
+
+for n in range(0, 24):
+    print('name: ' + getAccount.json()[n]['name'])
+    print('id: ' , getAccount.json()[n]['id'])
+    print('addresses ' , getAccount.json()[n]['addresses'][0]['address1'])
