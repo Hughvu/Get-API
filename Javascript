@@ -1,0 +1,54 @@
+const client_id = "9BFBC1DD-9978-456C-8874-FC73299DB882";
+const client_secret = "CS/m3cXcBo0aPm6QYA02VK3k8vob3JX0v6ed/OaFiIU=";
+const username = "hugh";
+const password = "manie580";
+const grant_type = "password";
+  
+  fetch(`https://bssandbox.leadercloud.com.au/oauth/token`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Basic ${btoa(`${client_id}:${client_secret}`)}`
+    },
+    body: new URLSearchParams({
+      client_id: client_id,
+      client_secret: client_secret,
+      username: username,
+      password: password,
+      grant_type: grant_type
+    }).toString()
+  })
+    .then(response => response.json())
+    .then(tokenData => {
+      const accessToken = tokenData.access_token;
+      //console.log('Access token:', accessToken);
+  
+      // Step 2: Use the access token to fetch data
+      fetch(`https://bssandbox.leadercloud.com.au/api/accounts?pageSize=200`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+          'X-api-version': '3'
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          //console.log(data['paging'])
+          const accountArr = data['data']
+          for(let i = 0; i < accountArr.length; i++) {
+            console.log("ID: " + accountArr[i]['id'] + ", Account Name: " + accountArr[i]['name'])
+          }
+          //console.log('API response:', data);
+          return 0;
+          // Handle the data as needed
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+          // Handle the error
+        });
+    })
+    .catch(error => {
+      console.error('Error obtaining access token:', error);
+      // Handle the error
+    });
